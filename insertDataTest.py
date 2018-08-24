@@ -1,18 +1,16 @@
-import csv
 import psycopg2
 
 conn = psycopg2.connect("dbname = dq user = dq")
-cur = conn.cursor()
+cur = conn.cursor();
 
+#user_accounts.csv has a header row
+#load the file and copy it to database
 with open('user_accounts.csv', 'r') as f:
-    reader = csv.reader(f)
-    next(reader, None)
-    for line in reader:
-        cur.execute("INSERT INTO users VALUES (%s, %s, %s, %s)", (line[0], line[1], line[2], line[3]))
+    #skip header row
+    next(f)
+    cur.copy_from(f, 'users', sep=',')
 
-cur.execute("SELECT * from users")
+cur.execute("SELECT * FROM users;")
 users = cur.fetchall()
 
 conn.close()
-        
-    
