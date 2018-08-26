@@ -8,6 +8,7 @@ readable_description = {}
 for table in table_names:
     cur.execute("SELECT * FROM %s LIMIT 0", [AsIs(table)])
     #create nest dictionary
+    #type_mappings is object that map type code and type names
     readable_description[table] = dict(
         columns=[
             dict(
@@ -15,7 +16,7 @@ for table in table_names:
                 type=type_mappings[col.type_code],
                 length=col.internal_size
             )
-            for col in cur.description
+            for col in cur.description #iteract each table and assign table column's value to dict value
         ]
     )
 print(readable_description)
